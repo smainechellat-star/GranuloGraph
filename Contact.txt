@@ -1,0 +1,27 @@
+
+#### **`setup.py`** (For pip installation)
+```python
+from setuptools import setup, find_packages
+
+setup(
+    name="GranuloGraph",
+    version="1.0.0",
+    author="Smaine CHELLAT University Constantine 1",
+    description="Granulometry Analysis Software",
+    packages=find_packages(),
+    install_requires=[
+        "numpy>=2.0.0",
+        "scipy>=1.14.0",
+        "pandas>=2.2.0",
+        "matplotlib>=3.9.0",
+        "openpyxl>=3.1.5",
+        "xlrd>=2.0.1",
+        "pillow>=10.3.0",
+    ],
+    python_requires=">=3.11",
+    entry_points={
+        "console_scripts": [
+            "granulograph=main:main",
+        ],
+    },
+)

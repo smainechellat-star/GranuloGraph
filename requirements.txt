@@ -1,0 +1,100 @@
+# ========================================
+# GranuloGraph - Requirements File
+# Compatible with Python 3.11, 3.12, 3.13+
+# Last Updated: March 2026
+# ========================================
+# 
+# Installation:
+#   pip install -r requirements.txt
+#
+# For development (editable install):
+#   pip install -e .
+#
+# For Windows executable:
+#   run build_exe.bat (uses PyInstaller)
+#
+# ========================================
+
+# ── Core numerical and scientific computing ──────────────────────────────
+# NumPy: Array operations, numerical computations
+# ✅ Using stable v2.x (avoid rc/pre-release versions for production)
+numpy>=2.0.0,<3.0.0
+
+# SciPy: Interpolation, statistics, signal processing
+# ✅ Required for CubicSpline, PchipInterpolator in calculations.py
+scipy>=1.14.0,<2.0.0
+
+# Pandas: Data handling, Excel/CSV I/O
+# ✅ Used in FileHandler for import/export operations
+pandas>=2.2.0,<3.0.0
+
+# ── Plotting and visualization ───────────────────────────────────────────
+# Matplotlib: Graph rendering, figure export
+# ✅ Backend: TkAgg (configured in main.py)
+# ✅ Note: First import may take 10-30s on Windows (font cache build)
+matplotlib>=3.9.0,<4.0.0
+
+# ── Excel file handling ──────────────────────────────────────────────────
+# openpyxl: Read/write .xlsx files (Excel 2010+)
+# ✅ Required for FileHandler.load_excel() and save_excel()
+openpyxl>=3.1.5,<4.0.0
+
+# xlrd: Read legacy .xls files (Excel 97-2003)
+# ⚠️  xlrd 2.0+ ONLY supports .xls format (not .xlsx)
+#    For .xlsx files, pandas uses openpyxl (listed above)
+xlrd>=2.0.1,<3.0.0
+
+# ── Image handling ───────────────────────────────────────────────────────
+# Pillow: Image I/O for icons, export formats (PNG, JPG, TIFF)
+# ✅ Used by matplotlib for figure export
+pillow>=10.3.0,<11.0.0
+
+# ── Executable builder (Windows) ─────────────────────────────────────────
+# PyInstaller: Bundle Python app into standalone .exe
+# ⚠️  Test thoroughly: matplotlib + tkinter + PyInstaller can have quirks
+#    See build_exe.bat for recommended flags
+pyinstaller>=6.7.0,<7.0.0
+
+# ── Optional dependencies (uncomment if needed) ──────────────────────────
+# statsmodels>=0.14.1,<0.15.0
+#   → Advanced statistical tests (beyond Folk & Ward)
+#   → Not required for core functionality
+
+# reportlab>=4.2.0,<5.0.0
+#   → PDF report generation (if implementing export_pdf_report fully)
+#   → Currently placeholder in graph_screen.py
+
+# ── Development dependencies (optional) ──────────────────────────────────
+# pytest>=8.0.0,<9.0.0
+#   → Run tests: pytest tests/
+# black>=24.0.0,<25.0.0
+#   → Code formatting: black .
+# mypy>=1.8.0,<2.0.0
+#   → Type checking: mypy *.py
+
+# ── Platform-specific notes ──────────────────────────────────────────────
+# Windows:
+#   • tkinter is included with official Python installer
+#   • If using python.org installer, ensure "tcl/tk" option is checked
+#   • PyInstaller .exe may trigger Windows Defender — add exclusion if needed
+#
+# Linux (Ubuntu/Debian):
+#   • Install system deps first: sudo apt install python3-tk python3-dev
+#
+# macOS:
+#   • Install tkinter: brew install python-tk
+#   • May need: export TCL_LIBRARY=$(python3 -c "import tkinter; print(tkinter.TclLibrary)")
+
+# ── Troubleshooting ──────────────────────────────────────────────────────
+# If pip install fails:
+#   1. Upgrade pip: python -m pip install --upgrade pip
+#   2. Try: pip install --no-cache-dir -r requirements.txt
+#   3. For numpy/scipy build errors: install Microsoft C++ Build Tools (Windows)
+#
+# If matplotlib backend errors:
+#   • Ensure Tkinter is installed (see platform notes above)
+#   • Try: python -c "import tkinter; tkinter._test()"
+#
+# If PyInstaller .exe fails to launch:
+#   • Run from command line to see error output
+#   • Check for missing DLLs with: Dependencies GUI (https://github.com/lucasg/Dependencies)

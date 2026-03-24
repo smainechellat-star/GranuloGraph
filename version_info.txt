@@ -1,0 +1,17 @@
+{
+    'version': '1.0.0',
+    'description': 'GranuloGraph - Granulometry Analysis Software for Sedimentology and Engineering Geology',
+    'comments': 'Developed for academic research and professional applications in granulometric analysis',
+    'company_name': 'University Constantine 1 - Geological Department, Algeria',
+    'file_description': 'Granulometry Analysis Application with Folk & Ward (1957) Parameters',
+    'file_version': '1,0,0,0',
+    'internal_name': 'GranuloGraph',
+    'legal_copyright': '© 2026 Smaine Chellat, University Constantine 1',  # ✅ Updated
+    'original_filename': 'GranuloGraph.exe',
+    'product_name': 'GranuloGraph',
+    'product_version': '1,0,0,0',
+    'author': 'Smaine Chellat',              # ✅ Added
+    'author_email': 'smaine.chellat@gmail.com',  # ✅ Added
+    'author_orcid': 'https://orcid.org/0000-0003-4103-0436',  # ✅ Added
+    'zenodo_doi': 'https://doi.org/10.5281/zenodo.19109947'   # ✅ Added
+}
