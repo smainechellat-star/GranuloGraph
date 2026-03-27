@@ -89,7 +89,7 @@ GranuloGraph supports **two calculation bases** to comply with different interna
 ### Method 1: From Source (Recommended for Development)
 ```bash
 # 1. Clone or download the repository
-git clone https://github.com/schellat/GranuloGraph.git
+git clone https://github.com/smainechellat/GranuloGraph.git
 cd GranuloGraph
 
 # 2. Create virtual environment (recommended)
