@@ -243,7 +243,7 @@ class SettingsScreen(tk.Frame):
         readme_content = f"""
 GRANULOGRAPH - README
 {'='*60}
-VERSION: 1.0
+VERSION: 2.0
 DATE: {datetime.now().strftime('%B %Y')}
 DOI: https://doi.org/10.5281/zenodo.19109947  
 
@@ -604,9 +604,9 @@ SOFTWARE.
 CITATION REQUIREMENT:
 If you use GranuloGraph in academic research or publications, please cite:
 
-Chellat, S. (2026). GranuloGraph: A granulometry analysis application for 
+Chellat, S. (2026). GranuloGraph V (2.0): A granulometry analysis application for 
 sedimentology and engineering geology [Computer software]. Zenodo. 
-https://doi.org/10.5281/zenodo.19109947
+https://doi.org/10.5281/zenodo.24435516
 
 ---
 

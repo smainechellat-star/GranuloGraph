@@ -1,5 +1,5 @@
 # ========================================
-# GranuloGraph - Requirements File
+# GranuloGraph (V.2) - Requirements File
 # Compatible with Python 3.11, 3.12, 3.13+
 # Last Updated: March 2026
 # ========================================

@@ -287,7 +287,7 @@ class FileHandler:
                 if not line or line.startswith('#'):
                     # Check for metadata in comments
                     if 'initial' in line.lower() and 'weight' in line.lower():
-                        numbers = re.findall(r"[-+]?\d*\.\d+|\d+", line.replace(',', '.'))
+                        numbers = re.findall(r"[-+]?\d+(?:\.\d+)?", line.replace(',', '.'))  # FIX: require digits before the decimal point, otherwise ".232" matches before "232.0000" in the metadata header
                         if numbers:
                             initial_weight = float(numbers[0])
                     elif 'basis' in line.lower() or 'method' in line.lower():
