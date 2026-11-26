@@ -7,7 +7,7 @@ Author : Smaine Chellat
 Institution: University Constantine 1, Geological Department, Algeria
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-INTERPOLATION ENGINE  (v2.0)
+INTERPOLATION ENGINE  (v3.0)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Logarithmic PCHIP histospline workflow (Fritsch–Carlson, 1980):
 

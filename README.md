@@ -1,6 +1,6 @@
-# GranuloGraph v2.0 - Granulometry Analysis Software
+# GranuloGraph v3.0 - Granulometry Analysis Software
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24435516.svg)](https://doi.org/10.5281/zenodo.24435516)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24550453.svg)](https://doi.org/10.5281/zenodo.24550453)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-lightgrey.svg)](https://www.microsoft.com/windows)
@@ -23,7 +23,7 @@
 
 ## 📖 Overview
 
-**GranuloGraph v2.0** is a desktop application (Python/Tkinter/Matplotlib) designed for sedimentologists, engineering geologists, and civil engineers. It covers the complete sieve-analysis workflow: data entry, automatic validation, statistical parameter calculation (**Folk & Ward, 1957**), geotechnical grading indices, environmental discrimination diagrams, and publication-ready exports.
+**GranuloGraph v3.0** is a desktop application (Python/Tkinter/Matplotlib) designed for sedimentologists, engineering geologists, and civil engineers. It covers the complete sieve-analysis workflow: data entry, automatic validation, statistical parameter calculation (**Folk & Ward, 1957**), geotechnical grading indices, environmental discrimination diagrams, and publication-ready exports.
 
 ### 🔬 Dual Calculation Methods
 
@@ -92,14 +92,24 @@ GranuloGraph supports **two calculation bases** to comply with different interna
 - ✅ **Bland-Altman Dual-Basis Comparison** (button right below *Distribution Graphs*, needs ≥ 2 samples): two stacked panels — **a) D50 (median grain size)** and **b) Folk-Ward Inclusive Graphic Standard Deviation (σI)** — plotting the **difference (ISO − ASTM)** against the **average of the two bases** (both in φ). Each panel draws the **zero line** (red dotted), the **mean bias** (black solid) and the **±1.96 SD limits of agreement** (grey dashed, labeled with their values); points are **colour-coded by recovery loss 100·(M₀ − Mr)/M₀** (< 2 % blue · 2–5 % orange · > 5 % red) with sample names annotated above the bias line and a recovery-loss legend on panel b. A point close to the zero line means both calculation bases agree for that sample — the vertical offset is exactly the shift caused by the recovered-vs-initial mass normalization
 
 ### 💾 Export Options (all from the Graph Screen export menu)
-- ✅ **Main graph**: PNG (300 DPI), PDF, JPG, TIFF (150 DPI) — also from *File → Export Graph*
+- ✅ **Main graph** — also from *File → Export Graph* — now exported through the **unified export engine: every format × every resolution** (see below)
 - ✅ **Results**: CSV or formatted Excel (.xlsx) including the calculation basis, recovery metadata and the **ISO 14688-1 + ASTM D2487 size-fraction columns (%)**
 - ✅ **All Parameters**: one CSV/XLSX/TXT file combining, for every sample: declared provenance, calculation basis, software-suggested environment (Friedman skewness rule) and transport mechanism (Passega), all percentiles (mm + φ), central-tendency values, sorting/skewness/kurtosis **with their classes**, Cu/Cc/FM **with their classes**, the pan summary, and two clearly labeled blocks — **ISO 14688-1 Fractions (%)** and **ASTM D2487 Fractions (%)**
 - ✅ **📄 Multi-page PDF report** (new in v2.0 — built with Matplotlib, no extra dependency):
   - *Page 1*: report header (date, calculation basis, sample list, initial weight) + overlay of all cumulative curves with legend and ISO boundaries
   - *One A4 sheet per sample*: curve with **D10 / D30 / D50 / D60 markers**, declared provenance, and the full parameter block (percentiles + φ, PAN, central tendency, σI/Sk/KG classes, Cu/Cc/FM classes, **ISO 14688-1 & ASTM D2487 fractions**, QC recovery line)
   - PDF metadata (title, author, subject, keywords) embedded automatically
-- ✅ Dedicated one-click exports for the Friedman diagrams, the Passega diagram, the **ternary diagrams (Folk/Shepard — PNG 300 DPI or PDF)**, the **distribution graphs (φ & μm — PNG/PDF)**, the **Bland-Altman plot (⚖ — PNG/PDF)** and the correlation graph — the Friedman and Passega exports render the same dual-basis filled/open circles and legend as the on-screen windows
+- ✅ Dedicated one-click exports for the Friedman diagrams, the Passega diagram, the **ternary diagrams (Folk/Shepard)**, the **distribution graphs (φ & μm)**, the **Bland-Altman plot (⚖)** and the correlation graph — the Friedman and Passega exports render the same dual-basis filled/open circles and legend as the on-screen windows
+- ✅ **📊 Unified export engine (NEW — one dialog for every figure export)**: the Export menu, every dedicated export button and the toolbar **Save the figure** button (bottom-left disk icon) now share a single **format + resolution** dialog:
+  - **Raster formats**: PNG · JPEG · TIFF · **WebP (NEW)** · GIF
+  - **Vector formats**: PDF · **SVG (NEW)** · **EPS (NEW)** · **AI — Adobe Illustrator (NEW, PDF vector data)**
+  - **CAD formats (NEW)**: **DXF** (open CAD interchange — AutoCAD, QCAD, LibreCAD, CorelDRAW) · **DWG** (written as DXF data; a **true DWG** is produced automatically when the free ODA File Converter is installed)
+  - **CorelDRAW / WordPerfect (NEW)**: **CRD/CDR** and **WP/WPG** (SVG vector data — import via *File → Open/Import*)
+  - **Resolutions (NEW)**: 96 / 150 / 200 / 300 / 600 DPI · **HD 1280 px** · **Full HD 1920 px** · **2K QHD 2560 px** · **4K UHD 3840 px** — pixel presets are converted to the exact DPI, so a "4K" export is a **real re-render** of the figure, not an upscale
+- ✅ **🖥 Full-screen capture in HD/4K (NEW)** — save the **complete Graph Screen** (menu bar, toolbar, graph, side panels) or the **complete Home Screen** as a single HD / Full-HD / 2K / 4K image, without any external screenshot tool:
+  - **Graph Screen**: *🖥 Save Full Screen (HD/4K)* button **next to the frequency-curve buttons** (bottom left) — also in the 💾 Export menu and via *File → Save Current Screen (HD/4K)*
+  - **Home Screen**: *🖥 Save Home Screen (HD/4K)* button **right under 📊 Display Graph**
+  - Windows uses the PrintWindow API (captures the whole window even when partly covered); other systems use the Pillow screen grab. For a true native 4K render of the graph itself, prefer the figure export at 4K UHD
 
 ---
 
@@ -110,7 +120,7 @@ GranuloGraph supports **two calculation bases** to comply with different interna
 3. **Validate** (*✓ Validate Data*): the app checks sieves ≥ 4 per sample, descending order, a single pan row, and computes recovery. Sieving loss > 0.5 % raises the ASTM D6913 warning.
 4. **Display Graph** → confirm the method → the Graph Screen opens with all cumulative curves.
 5. **Analyse**: hover the curve for live readings, project percentiles, toggle frequency curves (*📈 Display Frequency Curves*), choose which samples are displayed (*☑ Curves* / *☑ Frequency Curves*), and open the Sedimentological / Geotechnical / Correlation / Friedman / Passega tools from the side panel.
-6. **Export**: graphs, results, all-parameters tables or the multi-page PDF report from the 💾 Export menu.
+6. **Export**: graphs, results, all-parameters tables or the multi-page PDF report from the 💾 Export menu — every figure export offers **all formats (PNG … WebP, PDF, SVG, EPS, AI, DXF, DWG, CRD/CDR, WP/WPG)** and **HD → 4K UHD** resolutions.
 
 > 📘 For the full click-by-click procedure (21 steps), follow the **Step-by-Step User Guide** below.
 
@@ -167,13 +177,13 @@ A tooltip on each dropdown describes the selected provenance.
 
 **20. ⚖ Bland-Altman (ISO vs ASTM)** — dual-basis agreement plot of the two calculation bases (needs ≥ 2 samples).
 
-**21. 💾 Export button** — export and save the different parameters and graphs under **CSV, Excel (.xlsx), PNG or PDF** format: main graph, results, all parameters, plus dedicated exports for the Friedman plots, Passega diagram, ternary diagrams, distribution graphs, Bland-Altman plot and correlation graph.
+**21. 💾 Export button** — export and save the different parameters and graphs: main graph, results, all parameters, plus dedicated exports for the Friedman plots, Passega diagram, ternary diagrams, distribution graphs, Bland-Altman plot and correlation graph. Every figure export opens the **unified format + resolution dialog** — **PNG, JPEG, TIFF, WebP, GIF, PDF, SVG, EPS, AI, DXF, DWG, CRD/CDR, WP/WPG** and **HD → 4K UHD** resolutions. Use **🖥 Save Full Screen (HD/4K)** (next to the frequency-curve buttons, bottom left) to capture the whole Graph Screen window.
 
 ## 📜 Menu Reference
 
 | Menu | Commands |
 |------|----------|
-| **File** | New Session · Open Data (CSV/XLSX/XLS/TXT/GRL) · Save Data (CSV/XLSX) · Export Graph · Export Results · Export Text Report · Exit |
+| **File** | New Session · Open Data (CSV/XLSX/XLS/TXT/GRL) · Save Data (CSV/XLSX) · Export Graph · Export Results · Export Text Report · Save Current Screen (HD/4K) · Exit |
 | **View** | Home · Graph · Settings |
 | **Tools** | Calculate Parameters (tabbed window: Sedimentological / Geotechnical / Percentiles + recovery bar) · Compare Series · Preferences |
 | **Help** | Documentation · About |
@@ -198,7 +208,7 @@ A tooltip on each dropdown describes the selected provenance.
 | matplotlib | >= 3.9, < 4.0 | Graph rendering, TkAgg backend, PDF report (PdfPages) |
 | openpyxl | >= 3.1.5, < 4.0 | Read/write .xlsx files |
 | xlrd | >= 2.0.1, < 3.0 | Read legacy .xls files |
-| pillow | >= 10.3, < 11.0 | Image I/O for figure export |
+| pillow | >= 10.3, < 11.0 | Image I/O for figure export, WebP/GIF export and the HD/4K screen capture |
 | pyinstaller | >= 6.7 (optional) | Building the Windows .exe |
 
 > ℹ️ The PDF report uses Matplotlib's built-in `PdfPages` — **no extra PDF library is required**. *tkinter* ships with the official Python installer (make sure the *tcl/tk* option is checked); on Linux install `python3-tk`, on macOS `brew install python-tk`.
@@ -206,7 +216,7 @@ A tooltip on each dropdown describes the selected provenance.
 ### Method 1: From Source (Recommended for Development)
 ```bash
 # 1. Clone or download the repository
-git clone https://github.com/schellat/GranuloGraph.git
+git clone https://github.com/smainechellat-star/GranuloGraph.git
 cd GranuloGraph
 
 # 2. Create a virtual environment (recommended)
@@ -224,19 +234,25 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### Method 2: Windows Executable
-Build a standalone .exe with the included PyInstaller script:
+### Method 2: Windows Executable (recommended for end users)
+Two PyInstaller scripts are included:
 ```bash
-run build_exe.bat
+build_exe.bat           # folder build  -> dist\GranuloGraph\ (exe + _internal, fastest startup)
+build_exe_onefile.bat   # single-file build -> dist\GranuloGraph.exe
 ```
-The build bundles `icon.ico` and all assets (`resource_path()` handles the frozen-app paths). The resulting .exe may trigger a Windows Defender warning — add an exclusion if needed.
+The **single-file build** is the one published on Zenodo as `GranuloGraph_v2.0.1_windows_x64.exe`: it embeds Python and every library, so it runs on any **64-bit Windows 10/11 with no Python installed**. Save it in any writable folder and double-click. What users should know:
+- the first window can take 15–60 seconds to appear (self-extraction + Matplotlib font cache); later starts are faster
+- Windows SmartScreen may warn about an unsigned file — choose *More info → Run anyway*
+- the exe writes `granulograph_config.json` and `error.log` next to itself; keep it out of `C:\Program Files\` so settings persist
 
-### Method 3: Windows Installer (Inno Setup)
-For end-user distribution, build the standalone .exe (Method 2), then compile the installer:
+All builds bundle `icon.ico` and every asset (`resource_path()` handles the frozen-app paths). The .exe may trigger a Windows Defender warning — add an exclusion if needed.
+
+### Method 3: Windows Installer (Inno Setup, optional)
+If you prefer a traditional installed setup (Start-Menu shortcuts, Add/Remove Programs entry), build the folder .exe first (`build_exe.bat`), then compile the installer:
 ```bash
 ISCC.exe GranuloGraph.iss        # or open GranuloGraph.iss in the Inno Setup GUI
 ```
-The setup (`installer_output\GranuloGraph_v2.0_setup.exe`) installs `GranuloGraph.exe`, `README.md`, `LICENSE.txt`, `POST_INSTALL_INFO.txt` and `sample_data\example_data.csv`, creates the Start-Menu / optional desktop shortcuts and the Add/Remove Programs entry (uninstall key `GranuloGraph_is1`). The optional `Registry key.reg` adds the **.grl** file association, App Paths and default preferences — import it manually if you want **.grl** (GranuloGraph Data File) datasets to open by double-click and via *File → Open Data*.
+The setup (`installer_output\GranuloGraph_v2.0.0_setup.exe`) installs `GranuloGraph.exe`, `README.md`, `LICENSE.txt`, `POST_INSTALL_INFO.txt` and `sample_data\example_data.csv`, creates the Start-Menu / optional desktop shortcuts and the Add/Remove Programs entry (uninstall key `GranuloGraph_is1`). The optional `Registry key.reg` adds the **.grl** file association, App Paths and default preferences — import it manually if you want **.grl** (GranuloGraph Data File) datasets to open by double-click and via *File → Open Data*.
 
 ---
 
@@ -250,9 +266,11 @@ GranuloGraph/
 ├── settings_screen.py    # Settings & preferences screen (defaults persistence)
 ├── calculations.py       # GranuloCalculator: Folk & Ward parameters, percentiles, curves, pan handling, size fractions (ternary)
 ├── utils.py              # DataValidator, FileHandler (CSV/Excel/TXT + calculation-basis metadata), ConfigManager, UnitConverter (mm/φ/Wentworth/ISO 14688), StatisticsHelper (Folk & Ward class scales), ReportGenerator (formatted text report)
+├── export_utils.py       # Unified export engine: all formats (PNG…WebP, PDF, SVG, EPS, AI, DXF, DWG, CRD/CDR, WP/WPG), HD→4K resolutions, full-window HD/4K capture
 ├── requirements.txt      # Pinned dependencies (see table above)
-├── build_exe.bat         # PyInstaller build script (Windows executable)
-├── GranuloGraph.iss      # Inno Setup installer script (Method 3 above)
+├── build_exe.bat         # PyInstaller folder build: exe + _internal (input for the installer)
+├── build_exe_onefile.bat # PyInstaller single-file build: one standalone exe (Zenodo distribution)
+├── GranuloGraph.iss      # Inno Setup installer script (optional installer, Method 3 above)
 ├── Registry key.reg      # Optional Windows integration: .grl file association, App Paths, per-user preferences
 ├── version_info.txt      # Executable version metadata
 ├── LICENSE.txt           # MIT License + Zenodo citation entry
@@ -281,6 +299,7 @@ GranuloGraph/
 - **First launch is slow (10–30 s)**: Matplotlib is building its font cache — this happens only once.
 - **Backend / Tcl errors**: verify tkinter is installed (`python -c "import tkinter; tkinter._test()"`); on Linux: `sudo apt install python3-tk`, on macOS: `brew install python-tk`.
 - **pip install fails**: upgrade pip first (`python -m pip install --upgrade pip`); for numpy/scipy build issues on Windows install the Microsoft C++ Build Tools.
+- **CAD / design exports (DXF, DWG, AI, CRD/CDR, WP/WPG)**: `.dxf` and `.ai` (PDF vector data) open directly in AutoCAD and Adobe Illustrator. `.dwg` files contain **DXF data** (AutoCAD's open interchange format — open in AutoCAD and *Save As → DWG*; install the free ODA File Converter for native DWG writing). `.crd/.cdr/.wp/.wpg` files contain **SVG vector data** — use *File → Open/Import* in CorelDRAW or WordPerfect Office (2020+).
 - **Application crash**: unexpected exceptions are written to `error.log` next to the program and shown in a dialog — include that file when reporting an issue.
 - **.exe fails to launch**: run it from a command prompt to see the error; check missing DLLs with [Dependencies](https://github.com/lucasg/Dependencies).
 
@@ -302,7 +321,7 @@ GranuloGraph/
 
 If you use GranuloGraph in your research, please cite it via its Zenodo DOI:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24435516.svg)](https://doi.org/10.5281/zenodo.24435516)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24550453.svg)](https://doi.org/10.5281/zenodo.24550453)
 
 ```bibtex
 @software{chellat2026granulograph,
@@ -310,9 +329,9 @@ If you use GranuloGraph in your research, please cite it via its Zenodo DOI:
   title = {GranuloGraph: A granulometry analysis application for sedimentology and engineering geology},
   year = {2026},
   publisher = {Zenodo},
-  version = {2.0},
-  doi = {10.5281/zenodo.24435516},
-  url = {https://doi.org/10.5281/zenodo.24435516}
+  version = {3.0.0},
+  doi = {10.5281/zenodo.24550453},
+  url = {https://doi.org/10.5281/zenodo.24550453}
 }
 ```
 

@@ -3,7 +3,7 @@
 All notable changes to **GranuloGraph** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [2.0.0] - 2026-11-22
+## [3.0.0] - 2026-11-26
 
 ### Added
 - **Dual calculation basis** — ASTM D6913 (recovered weight, research) ↔ NF P94-056 / ISO 17892-4 (initial weight, geotechnical); selectable on the Home Screen / Settings and stamped into every export
@@ -19,15 +19,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Per-sample curve and frequency-curve selection panels (☑ Select All / ☐ Deselect All)
 - Percentile projection tool (any percentage → diameter) and Key Percentiles panel (P5–P95, mm + φ)
 - Cursor tracking (live diameter / % passing readout in the side panel)
-- Application icon (`icon.ico`) embedded in the .exe and in the installer
-- Windows installer (Inno Setup) with Start-Menu / optional desktop shortcuts, Add/Remove Programs entry and executable version metadata
+- Application icon (`icon.ico`) embedded in the .exe (Explorer icon + window title bar)
+- Optional Windows installer (Inno Setup) with Start-Menu / desktop shortcuts, Add/Remove Programs entry and executable version metadata
+- Single-file build script (`build_exe_onefile.bat`) producing a standalone `GranuloGraph_v2.0.0_windows_x64.exe` that runs with no Python installation (direct Zenodo download)
 - Optional `Registry key.reg` for the `.grl` file association, App Paths and default preferences
 - MIT `LICENSE.txt`, `POST_INSTALL_INFO.txt`, `example_data.csv` sample dataset and a 21-step user guide in the README
 
 ### Fixed
 - The graph title is now drawn as figure-level text in the empty band above the ISO/ASTM class labels — it no longer slides into the ISO class band on large / maximized windows
 
-## [1.0.0] - 2024-03-XX
+## [3.0.0] - 2024-03-XX
 
 ### Added
 - Initial release

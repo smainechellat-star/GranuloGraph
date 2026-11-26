@@ -1,6 +1,6 @@
 # Contributing to GranuloGraph
 
-Thank you for considering contributing to **GranuloGraph v2.0**, the granulometry analysis application for sedimentology and engineering geology. Bug reports, documentation improvements, new scientific diagrams and code fixes are all equally welcome.
+Thank you for considering contributing to **GranuloGraph v3.0**, the granulometry analysis application for sedimentology and engineering geology. Bug reports, documentation improvements, new scientific diagrams and code fixes are all equally welcome.
 
 ---
 
@@ -12,7 +12,7 @@ Thank you for considering contributing to **GranuloGraph v2.0**, the granulometr
 | **Email** | [smaine.chellat@gmail.com](mailto:smaine.chellat@gmail.com) |
 | **ORCID** | [0000-0003-4103-0436](https://orcid.org/0000-0003-4103-0436) |
 | **Affiliation** | University Constantine 1, Geological Department, Algeria |
-| **DOI** | <https://doi.org/10.5281/zenodo.24435516> |
+| **DOI** | <https://doi.org/10.5281/zenodo.24550453> |
 
 For questions about contributions, open a GitHub Issue or contact the author by email.
 

@@ -243,9 +243,9 @@ class SettingsScreen(tk.Frame):
         readme_content = f"""
 GRANULOGRAPH - README
 {'='*60}
-VERSION: 2.0
+VERSION: 3.0
 DATE: November 2026
-DOI: https://doi.org/10.5281/zenodo.24435516  
+DOI: https://doi.org/10.5281/zenodo.24550453  
 
 AUTHOR:
 {'='*60}
@@ -286,8 +286,8 @@ FEATURES:
 INSTALLATION:
 {'='*60}
 Option A - no Python needed (recommended):
-1. Download GranuloGraph_v2.0.0_windows_x64.exe from the
-   Zenodo record: https://doi.org/10.5281/zenodo.24435516
+1. Download GranuloGraph_v3.0.0_windows_x64.exe from the
+   Zenodo record: https://doi.org/10.5281/zenodo.24550453
 2. Save it in a writable folder (e.g. Documents) and double-click
    (first start may take up to one minute - be patient)
 Option B - from source:
@@ -331,16 +331,16 @@ For questions, collaboration, or bug reports:
 • Institution: University Constantine 1
 • Address: Constantine, Algeria
 • ORCID: https://orcid.org/0000-0003-4103-0436  
-• Zenodo DOI: https://doi.org/10.5281/zenodo.24435516  
+• Zenodo DOI: https://doi.org/10.5281/zenodo.24550453  
 
 CITATION:
 {'='*60}
 If you use GranuloGraph in your research, please cite:
 
-Chellat, S. (2026). GranuloGraph (Version 2.0): A granulometry analysis 
+Chellat, S. (2026). GranuloGraph (Version 3.0): A granulometry analysis 
 application for sedimentology and engineering geology 
 [Computer software]. Zenodo. 
-https://doi.org/10.5281/zenodo.24435516  
+https://doi.org/10.5281/zenodo.24550453  
 
 © 2026 Smaine Chellat, University Constantine 1. All Rights Reserved.
 """
@@ -404,12 +404,12 @@ https://doi.org/10.5281/zenodo.24435516
                 font=('Arial', 11, 'bold'), bg='#ecf0f1').pack(anchor=tk.W)
         
         doi_link = tk.Label(doi_frame, 
-                           text="https://doi.org/10.5281/zenodo.24435516",
+                           text="https://doi.org/10.5281/zenodo.24550453",
                            font=('Arial', 10), bg='#ecf0f1', fg='#3498db',
                            cursor="hand2")
         doi_link.pack(anchor=tk.W, pady=(5, 0))
         doi_link.bind("<Button-1>", lambda e: webbrowser.open_new(
-            "https://doi.org/10.5281/zenodo.24435516"))
+            "https://doi.org/10.5281/zenodo.24550453"))
         
         # === DESCRIPTION ===
         desc_frame = tk.LabelFrame(scrollable_frame, text="📖 About GranuloGraph",
@@ -499,7 +499,7 @@ merge, publish, distribute, sublicense, and/or sell copies of the Software,
 subject to the conditions in the LICENSE file.
 
 When using this software in academic work, please cite the Zenodo DOI:
-https://doi.org/10.5281/zenodo.24435516"""
+https://doi.org/10.5281/zenodo.24550453"""
         
         tk.Label(license_frame, text=license_text, font=('Arial', 10),
                 bg='white', justify=tk.LEFT, wraplength=520).pack(pady=10)
@@ -520,7 +520,7 @@ https://doi.org/10.5281/zenodo.24435516"""
 
 ✉️ Email: smaine.chellat@gmail.com
 🔗 ORCID: https://orcid.org/0000-0003-4103-0436
-📄 DOI: https://doi.org/10.5281/zenodo.24435516
+📄 DOI: https://doi.org/10.5281/zenodo.24550453
 🏛️ Institution: University Constantine 1, Geological Department
 📍 Location: Constantine, Algeria
 
@@ -554,9 +554,9 @@ When reporting issues, please include:
         tk.Label(citation_frame, text="📝 How to Cite GranuloGraph",
                 font=('Arial', 11, 'bold'), bg='#f8f9f9').pack(pady=(10, 5))
         
-        citation_text = """Chellat, S. (2026). GranuloGraph (Version 2.0): A granulometry analysis 
+        citation_text = """Chellat, S. (2026). GranuloGraph (Version 3.0): A granulometry analysis 
 application for sedimentology and engineering geology [Computer software]. 
-Zenodo. https://doi.org/10.5281/zenodo.24435516"""
+Zenodo. https://doi.org/10.5281/zenodo.24550453"""
         
         tk.Label(citation_frame, text=citation_text, font=('Courier', 9),
                 bg='#f8f9f9', justify=tk.LEFT, wraplength=500).pack(padx=10, pady=5)
@@ -611,9 +611,9 @@ SOFTWARE.
 CITATION REQUIREMENT:
 If you use GranuloGraph in academic research or publications, please cite:
 
-Chellat, S. (2026). GranuloGraph (Version 2.0): A granulometry analysis application for 
+Chellat, S. (2026). GranuloGraph (Version 3.0): A granulometry analysis application for 
 sedimentology and engineering geology [Computer software]. Zenodo. 
-https://doi.org/10.5281/zenodo.24435516
+https://doi.org/10.5281/zenodo.24550453
 
 ---
 

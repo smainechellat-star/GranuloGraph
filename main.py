@@ -38,6 +38,15 @@ except ImportError as e:
     print(f"Error importing custom modules: {e}")
     sys.exit(1)
 
+# Unified export engine: every format (PNG/JPEG/TIFF/WebP/GIF/PDF/SVG/EPS/AI/
+# DXF/DWG/CRD/CDR/WP/WPG) and every resolution (96-600 DPI, HD -> 4K UHD).
+try:
+    import export_utils
+except ImportError as e:
+    print(f"Error importing export_utils.py (unified export engine): {e}\n"
+          f"Place export_utils.py next to main.py.")
+    sys.exit(1)
+
 # settings_screen.py is optional: the menu degrades gracefully when it is absent
 try:
     from settings_screen import SettingsScreen
@@ -98,6 +107,8 @@ class GranuloGraph:
         file_menu.add_command(label="Export Graph", command=self.export_graph)
         file_menu.add_command(label="Export Results", command=self.export_results)
         file_menu.add_command(label="Export Text Report", command=self.export_text_report)
+        file_menu.add_separator()
+        file_menu.add_command(label="Save Current Screen (HD/4K)", command=self.save_current_screen)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.root.quit)
         
@@ -217,14 +228,27 @@ class GranuloGraph:
             messagebox.showinfo("Success", f"Text report saved to {filename}")
         except Exception as e: messagebox.showerror("Error", f"Failed to export report: {str(e)}")
 
+    def save_current_screen(self):
+        """Capture the whole application window (menu bar + current screen) in
+        HD / Full HD / 2K / 4K - better than a manual screenshot (Windows
+        PrintWindow API, Pillow fallback elsewhere)."""
+        try:
+            saved = export_utils.prompt_export_screen(self.root, parent=self.root,
+                                                      suggested_name="GranuloGraph_screen")
+            if saved:
+                messagebox.showinfo("Success", f"Screen image saved to {saved}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to capture screen: {str(e)}")
+
     def export_graph(self):
+        """Export the main graph through the unified export engine: every
+        format (PNG/JPEG/TIFF/WebP/GIF/PDF/SVG/EPS/AI/DXF/DWG/CRD/CDR/WP/WPG)
+        and every resolution (96-600 DPI, HD -> 4K UHD)."""
         if not hasattr(self, 'graph') or not self.graph: messagebox.showwarning("No Graph", "No graph to export!"); return
-        filename = filedialog.asksaveasfilename(title="Export graph as", defaultextension=".png", filetypes=[("PNG files", "*.png"), ("JPEG files", "*.jpg"), ("TIFF files", "*.tiff"), ("PDF files", "*.pdf")])
-        if filename:
-            try:
-                self.graph.export_main_graph_direct(filename)
-                messagebox.showinfo("Success", f"Graph exported to {filename}")
-            except Exception as e: messagebox.showerror("Error", f"Failed to export: {str(e)}")
+        saved = export_utils.prompt_export_figure(self.graph.fig, parent=self.root,
+                                                  suggested_name="GranuloGraph_main_graph")
+        if saved:
+            messagebox.showinfo("Success", f"Graph exported to {saved}")
     
     def export_results(self):
         if self.current_data is None: messagebox.showwarning("No Data", "No results to export!"); return
@@ -305,7 +329,7 @@ class GranuloGraph:
         text.configure(yscrollcommand=scrollbar.set)
         text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True); scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         documentation = ("GRANULOGRAPH - Granulometry Analysis Software\n"
-                         "Version: 2.0\n\n"
+                         "Version: 3.0\n\n"
                          "Author: Smaine Chellat\n"
                          "Institution: University Constantine 1 - Geological Department, Algeria\n"
                          "Email: smaine.chellat@gmail.com\n"
@@ -313,17 +337,17 @@ class GranuloGraph:
                          "Standards: ASTM D6913 / NF P94-056 / ISO 17892-4 / ISO 14688-1:2017\n"
                          "Statistics: Folk & Ward (1957)\n\n"
                          "Full documentation: see README.md installed with the application.\n\n"
-                         "DOI: https://doi.org/10.5281/zenodo.24435516\n\n"
+                         "DOI: https://doi.org/10.5281/zenodo.24550453\n\n"
                          "Released under the MIT License - see LICENSE.txt")
         text.insert('1.0', documentation); text.config(state=tk.DISABLED)
     
     def show_about(self):
         messagebox.showinfo("About GranuloGraph",
-                            "GranuloGraph v2.0\n\n"
+                            "GranuloGraph v3.0\n\n"
                             "A comprehensive granulometry analysis application\n"
                             "for sedimentology and engineering geology.\n\n"
                             "Author: Smaine Chellat - University Constantine 1\n"
-                            "DOI: https://doi.org/10.5281/zenodo.24435516\n\n"
+                            "DOI: https://doi.org/10.5281/zenodo.24550453\n\n"
                             "Released under the MIT License (see LICENSE.txt)")
     
     def run(self):

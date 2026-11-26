@@ -1,7 +1,7 @@
 """
 Home Screen Module - Data Entry Interface
 
-FIXED VERSION (v2.1):
+FIXED VERSION (v3.0):
   2. Provenance comboboxes are now perfectly aligned with their data columns.
      Every cell (header label, Entry, Combobox) is wrapped in a fixed-pixel
      Frame (pack_propagate(False)), so the header row, the provenance row and
@@ -21,6 +21,9 @@ import os
 import csv
 from typing import List, Tuple, Optional, Union
 from calculations import is_pan_label, normalize_pan_label, PAN_LABELS
+
+# Unified export engine: full-window HD/4K capture (better than screenshots)
+from export_utils import prompt_export_screen
 
 ENVIRONMENTS = [
     "--- Select ---",
@@ -304,7 +307,8 @@ class HomeScreen(tk.Frame):
         self.valid_label = tk.Label(valid_frame, text="⏳ Ready to validate", font=('Arial', 9), bg='#f8f9f9', fg='#7f8c8d', wraplength=280, justify=tk.CENTER)
         self.valid_label.pack(pady=(0, 10), fill=tk.X)
         tk.Button(valid_frame, text="✓ Validate Data", command=self.validate_data, bg='#27ae60', fg='white', font=('Arial', 11, 'bold'), cursor="hand2").pack(fill=tk.X, pady=2)
-        tk.Button(scrollable_right, text="📊 Display Graph", command=self.go_to_graph, bg='#8e44ad', fg='white', font=('Arial', 12, 'bold'), cursor="hand2").pack(fill=tk.X, padx=10, pady=(15, 15))
+        tk.Button(scrollable_right, text="📊 Display Graph", command=self.go_to_graph, bg='#8e44ad', fg='white', font=('Arial', 12, 'bold'), cursor="hand2").pack(fill=tk.X, padx=10, pady=(15, 5))
+        tk.Button(scrollable_right, text="🖥 Save Home Screen (HD/4K)", command=self.save_home_screen, bg='#16a085', fg='white', font=('Arial', 10, 'bold'), cursor="hand2").pack(fill=tk.X, padx=10, pady=(0, 15))
 
         help_frame = tk.LabelFrame(scrollable_right, text="Instructions", font=('Arial', 9, 'bold'), bg='#f8f9f9', fg='#7f8c8d'); help_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
         help_text = "• Enter at least 4 sieves + Pan\n• Diameters in descending order\n• Use comma or point for decimals\n• Type 'Pan' or 'Bottom' in Diameter\n• Select calculation basis first\n• CSV format: diameter,weight\n• European: diameter;weight (31,5)"
@@ -561,6 +565,15 @@ class HomeScreen(tk.Frame):
             method = "ASTM (Recovered Weight)" if self.get_calculation_basis() else "NF/ISO (Initial Weight)"
             if force or messagebox.askokcancel("Confirm Calculation", f"Proceed with {method} method?\n\n• Research/Journals: Use ASTM\n• Geotechnical Reports: Use NF/ISO"):
                 self.app.show_graph_screen(force=True)
+
+    def save_home_screen(self):
+        """Capture the whole Home Screen window (menu bar, data grid and side
+        panel) in HD / Full HD / 2K / 4K - much better than a manual screenshot
+        (Windows PrintWindow API, Pillow fallback elsewhere)."""
+        saved = prompt_export_screen(self.winfo_toplevel(), parent=self,
+                                     suggested_name="GranuloGraph_home_screen")
+        if saved:
+            messagebox.showinfo("Export Successful", f"Home screen image saved to:\n{saved}", parent=self)
 
     def import_data(self):
         filename = filedialog.askopenfilename(

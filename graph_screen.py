@@ -3,7 +3,7 @@ Graph Screen Module - Visualization and Analysis
 Complete implementation with ISO 14688-1:2017 classification
 Author: Smaine Chellat
 Institution: University Constantine 1, Geological Department, Algeria
-Version: 2.0
+Version: 3.0
 """
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
@@ -16,6 +16,12 @@ import math
 from typing import List, Tuple, Dict, Optional
 from calculations import GranuloCalculator, normalize_pan_label
 import csv
+
+# Unified export engine: every format (PNG/JPEG/TIFF/WebP/GIF/PDF/SVG/EPS/AI/
+# DXF/DWG/CRD/CDR/WP/WPG), every resolution (96-600 DPI, HD -> 4K UHD), the
+# GranuloToolbar save button and the full-window HD/4K capture.
+from export_utils import (GranuloToolbar, export_figure, prompt_export_figure,
+                          prompt_export_screen)
 
 def fmt_num(x, decimals: int = 2, sig_figs: int = 3) -> str:
     if x is None: return "—"
@@ -138,7 +144,7 @@ class GraphScreen(tk.Frame):
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
         toolbar_frame = tk.Frame(left_panel)
         toolbar_frame.pack(fill=tk.X)
-        self.toolbar = NavigationToolbar2Tk(self.canvas, toolbar_frame)
+        self.toolbar = GranuloToolbar(self.canvas, toolbar_frame)
         self.toolbar.update()
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_mouse_move)
         toggle_frame = tk.Frame(left_panel)
@@ -149,6 +155,9 @@ class GraphScreen(tk.Frame):
                                          command=lambda: self._open_visibility_panel('freq_visible', 'Select Frequency Curves to Display', self.freq_select_btn,
                                          hint='Applies to the frequency curves (press "📈 Display Frequency Curves" to show them).'))
         self.freq_select_btn.pack(side=tk.LEFT, padx=5)
+        self.fullscreen_btn = tk.Button(toggle_frame, text="🖥 Save Full Screen (HD/4K)", command=self.save_full_screen,
+                                        bg='#16a085', fg='white', font=('Arial', 10), padx=10)
+        self.fullscreen_btn.pack(side=tk.LEFT, padx=5)
 
         right_panel = tk.Frame(content, width=320, relief=tk.GROOVE, bd=2, bg='#f8f9f9')
         right_panel.pack(side=tk.RIGHT, fill=tk.Y, padx=(5, 0))
@@ -235,7 +244,8 @@ class GraphScreen(tk.Frame):
         self.export_btn = tk.Button(export_frame, text="📥 Export", command=self.show_export_menu, bg='#3498db', fg='white', font=('Arial', 10, 'bold'), width=30, pady=5)
         self.export_btn.pack(pady=2)
         self.export_menu = tk.Menu(export_frame, tearoff=0, bg='white', font=('Arial', 10))
-        self.export_menu.add_command(label="📊 Main Graph as PNG", command=self.export_main_graph)
+        self.export_menu.add_command(label="📊 Main Graph (all formats)", command=self.export_main_graph)
+        self.export_menu.add_command(label="🖥 Save Full Screen (HD/4K)", command=self.save_full_screen)
         self.export_menu.add_command(label="📁 Results as CSV", command=lambda: self.app.export_results())
         self.export_menu.add_command(label="📊 Results as Excel (.xlsx)", command=self.export_results_xlsx)
         self.export_menu.add_command(label="📄 Report as PDF", command=self.export_pdf_report)
@@ -245,7 +255,7 @@ class GraphScreen(tk.Frame):
         self.export_menu.add_command(label="📈 Export Friedman Plots", command=self.export_friedman_plots)
         self.export_menu.add_command(label="📉 Export Passega Diagram", command=self.export_passega_diagram)
         self.export_menu.add_command(label="🌐 Export Ternary Diagrams (Folk/Shepard)", command=self.export_ternary_diagrams)
-        self.export_menu.add_command(label="📊 Export Distribution Graphs (PNG)", command=self.export_distribution_graphs)
+        self.export_menu.add_command(label="📊 Export Distribution Graphs", command=self.export_distribution_graphs)
         self.export_menu.add_command(label="⚖ Export Bland-Altman Plot", command=self.export_bland_altman)
         self.export_menu.add_separator()
         self.export_menu.add_command(label="📊 Export Correlation Graph", command=self.export_correlation_graph)
@@ -257,29 +267,33 @@ class GraphScreen(tk.Frame):
         except Exception as e: messagebox.showerror("Error", f"Failed to show export menu: {str(e)}")
 
     def export_main_graph(self):
-        filename = filedialog.asksaveasfilename(title="Export Main Graph", defaultextension=".png", filetypes=[("PNG files", "*.png"), ("PDF files", "*.pdf"), ("JPEG files", "*.jpg"), ("TIFF files", "*.tiff")])
-        if filename:
-            try:
-                dpi = 300 if filename.endswith('.png') else 150
-                self.fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
-                messagebox.showinfo("Export Successful", f"Main graph exported to:\n{filename}")
-            except Exception as e: messagebox.showerror("Export Error", f"Failed to export: {str(e)}")
+        """Main graph export through the unified engine: every format
+        (PNG/JPEG/TIFF/WebP/GIF/PDF/SVG/EPS/AI/DXF/DWG/CRD/CDR/WP/WPG) and
+        every resolution (96-600 DPI, HD -> 4K UHD)."""
+        saved = prompt_export_figure(self.fig, parent=self, suggested_name="GranuloGraph_main_graph")
+        if saved:
+            messagebox.showinfo("Export Successful", f"Main graph exported to:\n{saved}")
             
-    def export_main_graph_direct(self, filename):
-        dpi = 300 if filename.endswith('.png') else 150
-        self.fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
+    def export_main_graph_direct(self, filename, res_key=None):
+        """Direct export used by File -> Export Graph (main.py): all formats,
+        all resolutions (96-600 DPI, HD -> 4K UHD)."""
+        export_figure(self.fig, filename, res_key)
+
+    def save_full_screen(self, suggested_name="GranuloGraph_graph_screen"):
+        """Capture the whole Graph Screen window (menu bar, toolbar, graph and
+        side panels) in HD / Full HD / 2K / 4K - much better than a manual
+        screenshot (Windows PrintWindow API, Pillow fallback elsewhere)."""
+        saved = prompt_export_screen(self.winfo_toplevel(), parent=self, suggested_name=suggested_name)
+        if saved:
+            messagebox.showinfo("Export Successful", f"Full screen image saved to:\n{saved}")
 
     def export_correlation_graph(self):
         if self.last_correlation_fig is None:
             messagebox.showwarning("No Correlation Graph", "Please open the Correlation Graph window first before exporting.")
             return
-        filename = filedialog.asksaveasfilename(title="Export Correlation Graph", defaultextension=".png", filetypes=[("PNG files", "*.png"), ("PDF files", "*.pdf"), ("JPEG files", "*.jpg"), ("TIFF files", "*.tiff")])
-        if filename:
-            try:
-                dpi = 300 if filename.endswith('.png') else 150
-                self.last_correlation_fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
-                messagebox.showinfo("Export Successful", f"Correlation graph exported to:\n{filename}")
-            except Exception as e: messagebox.showerror("Export Error", f"Failed to export: {str(e)}")
+        saved = prompt_export_figure(self.last_correlation_fig, parent=self, suggested_name="GranuloGraph_correlation")
+        if saved:
+            messagebox.showinfo("Export Successful", f"Correlation graph exported to:\n{saved}")
 
     def export_results_xlsx(self):
         all_series = []
@@ -784,7 +798,7 @@ class GraphScreen(tk.Frame):
         ax3.legend(handles=self._basis_legend_handles(), loc='best', fontsize=8)
         ax4 = fig.add_subplot(224); param_matrix = np.array([skewness, kurtosis, sorting, mean_phi, fm]); corr_matrix = np.corrcoef(param_matrix)
         im = ax4.imshow(corr_matrix, cmap='RdBu', vmin=-1, vmax=1, aspect='auto'); ax4.set_xticks(range(5)); ax4.set_yticks(range(5)); ax4.set_xticklabels(['Skew', 'Kurt', 'Sort', 'Mean φ', 'FM'], rotation=45, ha='right'); ax4.set_yticklabels(['Skew', 'Kurt', 'Sort', 'Mean φ', 'FM']); ax4.set_title('Correlation Matrix'); fig.colorbar(im, ax=ax4, fraction=0.046, pad=0.04)
-        fig.tight_layout(rect=[0, 0.045, 1, 1]); fig.text(0.5, 0.008, 'Filled circle = ASTM D6913 (recovered weight)   |   Open circle = ISO 17892-4 / NF P94-056 (initial weight)', ha='center', fontsize=9, style='italic', color='#555555'); canvas = FigureCanvasTkAgg(fig, win); canvas.draw(); canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True); toolbar = NavigationToolbar2Tk(canvas, win); toolbar.update()
+        fig.tight_layout(rect=[0, 0.045, 1, 1]); fig.text(0.5, 0.008, 'Filled circle = ASTM D6913 (recovered weight)   |   Open circle = ISO 17892-4 / NF P94-056 (initial weight)', ha='center', fontsize=9, style='italic', color='#555555'); canvas = FigureCanvasTkAgg(fig, win); canvas.draw(); canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True); toolbar = GranuloToolbar(canvas, win); toolbar.update()
 
     def show_friedman_plots(self):
         all_series = []
@@ -859,17 +873,14 @@ class GraphScreen(tk.Frame):
         note_text += "\nFilled circle = ASTM D6913 (recovered weight) | Open circle = ISO 17892-4 / NF P94-056 (initial weight)"
         fig.text(0.5, 0.01, note_text, ha='center', fontsize=9, style='italic', bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
         
-        canvas = FigureCanvasTkAgg(fig, win); canvas.draw(); canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True); toolbar = NavigationToolbar2Tk(canvas, win); toolbar.update()
+        canvas = FigureCanvasTkAgg(fig, win); canvas.draw(); canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True); toolbar = GranuloToolbar(canvas, win); toolbar.update()
         tk.Button(win, text="💾 Export Friedman Diagrams", command=lambda: self._export_friedman(fig), bg='#3498db', fg='white', font=('Arial', 9)).pack(pady=5)
 
     def _export_friedman(self, fig):
-        filename = filedialog.asksaveasfilename(title="Export Friedman Diagrams", defaultextension=".png", filetypes=[("PNG files", "*.png"), ("PDF files", "*.pdf")])
-        if filename:
-            try:
-                dpi = 300 if filename.endswith('.png') else 150
-                fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
-                messagebox.showinfo("Export Successful", f"Saved to:\n{filename}")
-            except Exception as e: messagebox.showerror("Export Error", f"Failed: {str(e)}")
+        """Unified export: every format (PNG -> DWG/CRD/WPG) and resolution."""
+        saved = prompt_export_figure(fig, parent=self, suggested_name="GranuloGraph_friedman")
+        if saved:
+            messagebox.showinfo("Export Successful", f"Saved to:\n{saved}")
 
     def show_passega_diagram(self):
         all_series = []
@@ -950,7 +961,7 @@ class GraphScreen(tk.Frame):
         note_text += "\nFilled circle = ASTM D6913 (recovered weight) | Open circle = ISO 17892-4 / NF P94-056 (initial weight)"
         if note_text: fig.text(0.5, 0.008, note_text, ha='center', va='bottom', fontsize=9, style='italic', color='red')
             
-        fig.tight_layout(rect=[0, 0.09, 1, 1]); canvas = FigureCanvasTkAgg(fig, win); canvas.draw(); canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True); toolbar = NavigationToolbar2Tk(canvas, win); toolbar.update()
+        fig.tight_layout(rect=[0, 0.09, 1, 1]); canvas = FigureCanvasTkAgg(fig, win); canvas.draw(); canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True); toolbar = GranuloToolbar(canvas, win); toolbar.update()
 
 
     # ═════════════════════════════════════════════════════════════════════
@@ -1095,27 +1106,24 @@ class GraphScreen(tk.Frame):
         win.geometry("1250x680")
         canvas = FigureCanvasTkAgg(fig, win); canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        toolbar = NavigationToolbar2Tk(canvas, win); toolbar.update()
+        toolbar = GranuloToolbar(canvas, win); toolbar.update()
         tk.Button(win, text="💾 Export Ternary Diagrams", bg='#c0392b', fg='white',
                   font=('Arial', 9),
                   command=lambda: self._export_figure_dialog(fig, "Ternary Diagrams")).pack(pady=5)
 
     def export_ternary_diagrams(self):
-        """Save the ternary diagrams as PNG (300 dpi) or PDF."""
+        """Save the ternary diagrams in any format and resolution (HD -> 4K)."""
         fig = self._build_ternary_figure()
         if fig is None: return
         self._export_figure_dialog(fig, "Ternary Diagrams")
 
     def _export_figure_dialog(self, fig, title):
-        filename = filedialog.asksaveasfilename(title=f"Export {title}",
-            defaultextension=".png", filetypes=[("PNG files", "*.png"), ("PDF files", "*.pdf")])
-        if filename:
-            try:
-                dpi = 300 if filename.endswith('.png') else 150
-                fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
-                messagebox.showinfo("Export Successful", f"Saved to:\n{filename}")
-            except Exception as e:
-                messagebox.showerror("Export Error", f"Failed: {str(e)}")
+        """Unified export for the dedicated windows (ternary, distribution,
+        Bland-Altman): every format and every resolution (HD -> 4K)."""
+        name = "GranuloGraph_" + title.lower().replace(' ', '_').replace('/', '_').replace('-', '_')
+        saved = prompt_export_figure(fig, parent=self, suggested_name=name)
+        if saved:
+            messagebox.showinfo("Export Successful", f"Saved to:\n{saved}")
 
 
     # ═════════════════════════════════════════════════════════════════════
@@ -1241,13 +1249,13 @@ class GraphScreen(tk.Frame):
         win.geometry("1350x650")
         canvas = FigureCanvasTkAgg(fig, win); canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        toolbar = NavigationToolbar2Tk(canvas, win); toolbar.update()
+        toolbar = GranuloToolbar(canvas, win); toolbar.update()
         tk.Button(win, text="💾 Export Distribution Graphs", bg='#2980b9', fg='white',
                   font=('Arial', 9),
                   command=lambda: self._export_figure_dialog(fig, "Distribution Graphs")).pack(pady=5)
 
     def export_distribution_graphs(self):
-        """Save the distribution graphs (PNG 300 dpi or PDF)."""
+        """Save the distribution graphs in any format and resolution (HD -> 4K)."""
         fig = self._build_distribution_figure()
         if fig is None: return
         self._export_figure_dialog(fig, "Distribution Graphs")
@@ -1432,13 +1440,13 @@ class GraphScreen(tk.Frame):
         win.geometry('1100x950')
         canvas = FigureCanvasTkAgg(fig, win); canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        toolbar = NavigationToolbar2Tk(canvas, win); toolbar.update()
+        toolbar = GranuloToolbar(canvas, win); toolbar.update()
         tk.Button(win, text='💾 Export Bland-Altman Plot', bg='#16a085', fg='white',
                   font=('Arial', 9),
                   command=lambda: self._export_figure_dialog(fig, 'Bland-Altman Plot')).pack(pady=5)
 
     def export_bland_altman(self):
-        """Save the Bland-Altman comparison (PNG 300 dpi or PDF)."""
+        """Save the Bland-Altman comparison in any format and resolution (HD -> 4K)."""
         records = self._collect_bland_altman_records()
         if len(records) < 2:
             messagebox.showwarning(
@@ -1571,8 +1579,6 @@ class GraphScreen(tk.Frame):
                 valid_series.append(series); valid_types.append(stype)
         if not valid_series: messagebox.showwarning("No Valid Data", "All samples are marked as 'Crushed / Quarry'. Cannot export."); return
         
-        filename = filedialog.asksaveasfilename(title="Export Friedman Plots", defaultextension=".png", filetypes=[("PNG files", "*.png"), ("PDF files", "*.pdf")])
-        if not filename: return
         try:
             dual_params = [self._dual_basis_params(s) for s in valid_series]
             fig = Figure(figsize=(14, 10), dpi=100); fig.suptitle('Friedman (1967) Diagrams', fontsize=14, fontweight='bold')
@@ -1595,8 +1601,8 @@ class GraphScreen(tk.Frame):
             fig.tight_layout(rect=[0, 0.05, 1, 0.97])
             if excluded_count > 0: fig.text(0.5, 0.01, f"⚠️ {excluded_count} Crushed/Quarry sample(s) excluded.", ha='center', fontsize=9, style='italic', color='red')
             fig.text(0.5, 0.048, 'Filled circle = ASTM D6913 (recovered weight) | Open circle = ISO 17892-4 / NF P94-056 (initial weight)', ha='center', fontsize=9, style='italic', color='#555555')
-            dpi = 300 if filename.endswith('.png') else 150; fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
-            messagebox.showinfo("Export Successful", f"Friedman plots exported to:\n{filename}")
+            saved = prompt_export_figure(fig, parent=self, suggested_name="GranuloGraph_friedman_plots")
+            if saved: messagebox.showinfo("Export Successful", f"Friedman plots exported to:\n{saved}")
         except Exception as e: messagebox.showerror("Export Error", f"Failed: {str(e)}")
 
     def export_passega_diagram(self):
@@ -1615,8 +1621,6 @@ class GraphScreen(tk.Frame):
                 
         if not valid_series: messagebox.showwarning("No Valid Data", "All samples are marked as 'Crushed / Quarry'. Cannot export."); return
         
-        filename = filedialog.asksaveasfilename(title="Export Passega Diagram", defaultextension=".png", filetypes=[("PNG files", "*.png"), ("PDF files", "*.pdf")])
-        if not filename: return
         try:
             astm_points, iso_points = [], []
             for i, series in enumerate(valid_series):
@@ -1651,8 +1655,8 @@ class GraphScreen(tk.Frame):
             fig.tight_layout(rect=[0, 0.085, 1, 1])
             if excluded_count > 0: fig.text(0.5, 0.048, f"⚠️ {excluded_count} Crushed/Quarry sample(s) excluded.", ha='center', va='bottom', fontsize=9, style='italic', color='red')
             fig.text(0.5, 0.012, 'Filled circle = ASTM D6913 (recovered weight) | Open circle = ISO 17892-4 / NF P94-056 (initial weight)', ha='center', va='bottom', fontsize=9, style='italic', color='#555555')
-            dpi = 300 if filename.endswith('.png') else 150; fig.savefig(filename, dpi=dpi, bbox_inches='tight', facecolor='white')
-            messagebox.showinfo("Export Successful", f"Passega diagram exported to:\n{filename}")
+            saved = prompt_export_figure(fig, parent=self, suggested_name="GranuloGraph_passega")
+            if saved: messagebox.showinfo("Export Successful", f"Passega diagram exported to:\n{saved}")
         except Exception as e: messagebox.showerror("Export Error", f"Failed: {str(e)}")
 
     def export_pdf_report(self):
